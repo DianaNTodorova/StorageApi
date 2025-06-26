@@ -7,7 +7,9 @@ using StorageApi.Models;
 
     public class StorageContext : DbContext
     {
-        public StorageContext (DbContextOptions<StorageContext> options)
+    public DbSet<Product> Products { get; set; }
+
+    public StorageContext (DbContextOptions<StorageContext> options)
             : base(options)
         {
         }
