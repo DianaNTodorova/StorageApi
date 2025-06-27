@@ -148,7 +148,23 @@ namespace StorageApi.Controllers
 
             return NoContent();
         }
-
+        // DELETE: api/Products/stats
+        [HttpGet("stats")]
+        public async Task<ActionResult<decimal>> GetTotalInventoryValue()
+        {
+            var totalValue = await _context.Products
+                .SumAsync(p => p.Price * p.Count);
+            var totalCount = await _context.Products
+                .SumAsync(p => p.Count);
+            var averagePrice = totalCount > 0 ? totalValue / totalCount : 0;
+            var result = new
+            {
+                TotalValue = totalValue,
+                TotalCount = totalCount,
+                AveragePrice = averagePrice
+            };
+            return Ok(result);
+        }
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);
