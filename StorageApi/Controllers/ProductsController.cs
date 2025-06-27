@@ -165,6 +165,51 @@ namespace StorageApi.Controllers
             };
             return Ok(result);
         }
+        
+        [HttpGet("category/{categoryName}")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory(string categoryName)
+        {
+            var products = await _context.Products
+                .Where(p => p.Category == categoryName)
+                .ToListAsync();
+            if (products == null || !products.Any())
+            {
+                return NotFound();
+            }
+            var dtoList = products.Select(product => new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Category = product.Category,
+                Shelf = product.Shelf,
+                Count = product.Count,
+                Description = product.Description
+            });
+            return Ok(dtoList);
+        }
+        [HttpGet("category/{categoryName}&{productName}")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategoryAndName(string categoryName, string productName)
+        {
+            var products = await _context.Products
+                .Where(p => p.Category == categoryName && p.Name == productName)
+                .ToListAsync();
+            if (products == null || !products.Any())
+            {
+                return NotFound();
+            }
+            var dtoList = products.Select(product => new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Category = product.Category,
+                Shelf = product.Shelf,
+                Count = product.Count,
+                Description = product.Description
+            });
+            return Ok(dtoList);
+        }
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);
